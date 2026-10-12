@@ -100,11 +100,11 @@ rarity.Activated:Connect(function()
 end)
 
 local areaNumber = 1
-local area = button("ÁREA: 1 / 9", 178)
+local area = button("ÁREA: 1 / 10", 178)
 
 area.Activated:Connect(function()
-    areaNumber = areaNumber % 9 + 1
-    area.Text = "ÁREA: " .. areaNumber .. " / 9"
+    areaNumber = areaNumber % 10 + 1
+    area.Text = "ÁREA: " .. areaNumber .. " / 10"
 end)
 
 local note = Instance.new("TextLabel", main)
