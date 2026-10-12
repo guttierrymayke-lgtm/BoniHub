@@ -1,112 +1,138 @@
 
--- BONI HUB | Interface inicial
--- Versão visual para teste no Roblox Studio
-
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
-local playerGui = player:WaitForChild("PlayerGui")
-
-local old = playerGui:FindFirstChild("BoniHub")
-if old then
-    old:Destroy()
-end
-
 local gui = Instance.new("ScreenGui")
 gui.Name = "BoniHub"
 gui.ResetOnSpawn = false
-gui.Parent = playerGui
+gui.Parent = player:WaitForChild("PlayerGui")
 
-local main = Instance.new("Frame")
-main.Size = UDim2.new(0, 300, 0, 390)
-main.Position = UDim2.new(0.5, -150, 0.5, -195)
-main.BackgroundColor3 = Color3.fromRGB(20, 15, 32)
-main.Parent = gui
+local purple = Color3.fromRGB(170, 60, 255)
+local dark = Color3.fromRGB(17, 17, 23)
 
-local corner = Instance.new("UICorner")
-corner.CornerRadius = UDim.new(0, 14)
-corner.Parent = main
+local main = Instance.new("Frame", gui)
+main.Size = UDim2.fromOffset(300, 330)
+main.Position = UDim2.new(0.5, -150, 0.5, -165)
+main.BackgroundColor3 = dark
 
-local stroke = Instance.new("UIStroke")
-stroke.Color = Color3.fromRGB(160, 70, 255)
+Instance.new("UICorner", main).CornerRadius =
+    UDim.new(0, 14)
+
+local stroke = Instance.new("UIStroke", main)
+stroke.Color = purple
 stroke.Thickness = 2
-stroke.Parent = main
 
-local title = Instance.new("TextLabel")
-title.Size = UDim2.new(1, 0, 0, 48)
-title.BackgroundColor3 = Color3.fromRGB(90, 35, 160)
-title.Text = "BONI HUB"
-title.TextColor3 = Color3.new(1, 1, 1)
-title.TextScaled = true
-title.Font = Enum.Font.GothamBold
-title.Parent = main
+local header = Instance.new("TextLabel", main)
+header.Size = UDim2.new(1, -90, 0, 44)
+header.Position = UDim2.fromOffset(12, 0)
+header.BackgroundTransparency = 1
+header.Text = "✦ BONI HUB"
+header.TextColor3 = purple
+header.TextSize = 21
+header.Font = Enum.Font.GothamBold
+header.TextXAlignment = Enum.TextXAlignment.Left
 
-local function makeButton(text, y, callback)
-    local button = Instance.new("TextButton")
-    button.Size = UDim2.new(1, -24, 0, 38)
-    button.Position = UDim2.new(0, 12, 0, y)
-    button.BackgroundColor3 = Color3.fromRGB(48, 35, 67)
-    button.TextColor3 = Color3.new(1, 1, 1)
-    button.Text = text
-    button.TextScaled = true
-    button.Font = Enum.Font.Gotham
-    button.Parent = main
-
-    local c = Instance.new("UICorner")
-    c.CornerRadius = UDim.new(0, 8)
-    c.Parent = button
-
-    button.Activated:Connect(callback)
-    return button
+local function button(text, y)
+    local b = Instance.new("TextButton", main)
+    b.Size = UDim2.new(1, -28, 0, 40)
+    b.Position = UDim2.fromOffset(14, y)
+    b.BackgroundColor3 = Color3.fromRGB(35, 29, 45)
+    b.TextColor3 = Color3.new(1, 1, 1)
+    b.Text = text
+    b.TextSize = 14
+    b.Font = Enum.Font.GothamBold
+    b.AutoButtonColor = true
+    Instance.new("UICorner", b).CornerRadius =
+        UDim.new(0, 9)
+    local s = Instance.new("UIStroke", b)
+    s.Color = purple
+    s.Thickness = 1
+    return b
 end
 
-local status = Instance.new("TextLabel")
-status.Size = UDim2.new(1, -24, 0, 28)
-status.Position = UDim2.new(0, 12, 0, 55)
+local close = Instance.new("TextButton", main)
+close.Size = UDim2.fromOffset(32, 30)
+close.Position = UDim2.new(1, -40, 0, 7)
+close.Text = "X"
+close.TextColor3 = Color3.new(1, 1, 1)
+close.BackgroundColor3 = Color3.fromRGB(90, 25, 45)
+close.Font = Enum.Font.GothamBold
+Instance.new("UICorner", close).CornerRadius =
+    UDim.new(0, 8)
+
+local minimize = Instance.new("TextButton", main)
+minimize.Size = UDim2.fromOffset(32, 30)
+minimize.Position = UDim2.new(1, -78, 0, 7)
+minimize.Text = "-"
+minimize.TextColor3 = Color3.new(1, 1, 1)
+minimize.BackgroundColor3 = Color3.fromRGB(45, 35, 60)
+minimize.Font = Enum.Font.GothamBold
+Instance.new("UICorner", minimize).CornerRadius =
+    UDim.new(0, 8)
+
+local status = Instance.new("TextLabel", main)
+status.Size = UDim2.new(1, -28, 0, 24)
+status.Position = UDim2.fromOffset(14, 49)
 status.BackgroundTransparency = 1
-status.TextColor3 = Color3.fromRGB(210, 180, 255)
-status.Text = "Auto Eggs: DESLIGADO"
-status.TextScaled = true
-status.Parent = main
+status.Text = "STATUS: DESLIGADO"
+status.TextColor3 = Color3.fromRGB(220, 190, 255)
+status.TextSize = 13
+status.Font = Enum.Font.GothamBold
 
-local enabled = false
-
-makeButton("LIGAR / DESLIGAR", 88, function()
-    enabled = not enabled
-    status.Text = enabled and
-        "Auto Eggs: LIGADO (visual)" or
-        "Auto Eggs: DESLIGADO"
+local active = false
+local toggle = button("ATIVAR / DESATIVAR", 78)
+toggle.Activated:Connect(function()
+    active = not active
+    status.Text = active and
+        "STATUS: LIGADO" or "STATUS: DESLIGADO"
 end)
 
 local rarities = {
-    "Comum", "Incomum", "Raro", "Épico", "Lendário",
-    "Mítico", "Cósmico", "Secreto", "Eterno", "Divino"
+    "Comum", "Incomum", "Raro", "Épico",
+    "Lendário", "Mítico", "Cósmico",
+    "Secreto", "Eterno", "Divino"
 }
+local rarityIndex = 1
+local rarity = button("RARIDADE: Comum", 128)
 
-local selected = 1
-
-makeButton("Raridade: " .. rarities[selected], 136, function()
-    selected = selected % #rarities + 1
-end).Activated:Connect(function()
-    -- A seleção será atualizada no próximo passo.
+rarity.Activated:Connect(function()
+    rarityIndex = rarityIndex % #rarities + 1
+    rarity.Text = "RARIDADE: " .. rarities[rarityIndex]
 end)
 
-local area = 1
+local areaNumber = 1
+local area = button("ÁREA: 1 / 9", 178)
 
-makeButton("Área: 1", 184, function()
-    area = area % 9 + 1
+area.Activated:Connect(function()
+    areaNumber = areaNumber % 9 + 1
+    area.Text = "ÁREA: " .. areaNumber .. " / 9"
 end)
 
-makeButton("FECHAR PAINEL", 232, function()
+local note = Instance.new("TextLabel", main)
+note.Size = UDim2.new(1, -28, 0, 55)
+note.Position = UDim2.fromOffset(14, 230)
+note.BackgroundTransparency = 1
+note.Text = "BONI HUB\nInterface visual • versão inicial"
+note.TextColor3 = Color3.fromRGB(180, 170, 195)
+note.TextSize = 12
+note.Font = Enum.Font.Gotham
+note.TextWrapped = true
+
+local minimized = false
+minimize.Activated:Connect(function()
+    minimized = not minimized
+    for _, item in ipairs(main:GetChildren()) do
+        if item ~= header and item ~= close
+            and item ~= minimize
+            and not item:IsA("UICorner")
+            and not item:IsA("UIStroke") then
+            item.Visible = not minimized
+        end
+    end
+    main.Size = minimized
+        and UDim2.fromOffset(300, 44)
+        or UDim2.fromOffset(300, 330)
+end)
+
+close.Activated:Connect(function()
     gui:Destroy()
 end)
-
-local note = Instance.new("TextLabel")
-note.Size = UDim2.new(1, -20, 0, 65)
-note.Position = UDim2.new(0, 10, 0, 285)
-note.BackgroundTransparency = 1
-note.TextColor3 = Color3.fromRGB(190, 175, 210)
-note.TextWrapped = true
-note.TextScaled = true
-note.Text = "Interface inicial de teste. Automação ainda não configurada."
-note.Parent = main
-
